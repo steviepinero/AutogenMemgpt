@@ -1,5 +1,4 @@
 import asyncio
-from flask import Flask, request, jsonify
 import autogen
 
 from config import OPENAI_API_KEY
@@ -72,23 +71,3 @@ async def main():
 # Run the main function using asyncio
 asyncio.run(main())
 
-# ---- Flask ----
-app = Flask(__name__)
-
-# Initialize your model
-llm_config = autogen.LLMConfig(model_name="dolphin-2.1-mistral-7b")
-pm = autogen.AssistantAgent(
-    name="Product_manager",
-    system_message="Creative in software product ideas.",
-    llm_config=llm_config,
-)
-
-@app.route('/api', methods=['POST'])
-async def generate_response():
-    data = request.get_json()
-    user_message = data.get('message', '')
-    response = await pm.generate_response(user_message)
-    return jsonify(response)
-
-if __name__ == '__main__':
-    app.run(port=5000, debug=True)
