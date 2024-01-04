@@ -7,6 +7,7 @@ import memgpt.autogen.interface as autogen_interface
 import memgpt.presets as presets
 from memgpt.persistence_manager import InMemoryStateManager
 import openai
+import secrets
 
 
 
@@ -20,10 +21,8 @@ config_list = [
 
 USE_MEMGPT = True
 
-import random
-
 llm_config={
-    "seed": random.randint(1, 10000), # random seed
+    "seed": secrets.SystemRandom().randint(1, 10000), # random seed
     "config_list": config_list, # list of API keys
 }
 
