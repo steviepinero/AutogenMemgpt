@@ -9,6 +9,7 @@ import memgpt.autogen.interface as autogen_interface
 import memgpt.presets as presets
 from memgpt.persistence_manager import InMemoryStateManager
 import openai
+import secrets
 
 #TODO: Add a section for the user to input their OpenAI API key
 openai.api_key = OPENAI_API_KEY
@@ -21,11 +22,9 @@ config_list = [
 
 USE_MEMGPT = True
 
-import random
-
 llm_config={
-    "seed": random.randint(1, 10000),
-    "config_list": config_list,
+    "seed": secrets.SystemRandom().randint(1, 10000), # random seed
+    "config_list": config_list, # list of API keys
 }
 
 user_proxy = autogen.UserProxyAgent(
