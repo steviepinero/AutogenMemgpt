@@ -1,4 +1,5 @@
 import asyncio
+import secrets
 import autogen
 
 from config import OPENAI_API_KEY
@@ -27,7 +28,7 @@ import random
 import asyncio
 
 llm_config={
-    "seed": random.randint(1, 10000), # random seed 
+    "seed": secrets.SystemRandom().randint(1, 10000), # random seed
     "config_list": config_list, # list of API keys 
 }
 
@@ -72,7 +73,7 @@ manager = autogen.GroupChatManager(groupchat=groupchat,
                                    llm_config=llm_config)
 
 
-
+#default request
 request = "I need a new feature for the app."
 
 # Create a queue to store the messages
@@ -106,10 +107,10 @@ def update_messages(window):
 
 
 # Create a new PySimpleGUI window
-layout = [[sg.Multiline(size=(50, 20), key='-TERMINAL-', autoscroll=True,auto_refresh=True, 
+layout = [[sg.Multiline(size=(100, 40), key='-TERMINAL-', autoscroll=True, auto_refresh=True, 
           reroute_stdout=True, reroute_stderr=True)],
 
-          [sg.Input(size=(44, 1), key='-INPUT-'), sg.Button('Send', bind_return_key=True)]]
+          [sg.Input(size=(44, 1), justification='center',  key='-INPUT-'), sg.Button('Send', bind_return_key=True)]]
 
 window = sg.Window('Chat', layout, finalize=True)
 
@@ -127,18 +128,21 @@ def run_main():
     asyncio.run(main())
 
 while True:
+
     event, values = window.read(timeout=100)  # Add a timeout to allow periodic updates
 
-    if event == sg.WIN_CLOSED:
-        break
-    if event == 'Send':
-        message = values['-INPUT-']
-        window['-INPUT-'].update('')
-        message_queue.put(f"User: {message}")
-        send_message(message)
+    try:
+        if event == sg.WIN_CLOSED:
+            break
+        if event == 'Send':
+            message = values['-INPUT-']
+            window['-INPUT-'].update('')
+            message_queue.put(f"User: {message}")
+            send_message(message)
 
-    update_messages(window)
-    
+        update_messages(window)
+    except Exception as e:
+        window['-TERMINAL-'].update(f"An error occurred: {e}\n", text_color='red', append=True)
 
 window.close()
 
@@ -149,8 +153,10 @@ window.close()
 
 
 #TODO:
-# keep app running after the TERMINATE message
+# handle exceptions and display custom error messages
 # path_to_save="groupchat", # where to save the conversation history
 # path_to_load="groupchat", # where to load the conversation history
 # create page to make an agent
 # create page for user api key
+
+
