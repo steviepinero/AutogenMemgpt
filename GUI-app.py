@@ -103,12 +103,10 @@ def update_messages(window):
     while not message_queue.empty():
         message = message_queue.get()
         window['-TERMINAL-'].update(message + '\n', append=True)
-        window['-OUTPUT-'].update(message + '\n', append=True)
-
 
 # Create a new PySimpleGUI window
 layout = [[sg.Multiline(size=(100, 40), key='-TERMINAL-', autoscroll=True, auto_refresh=True, 
-          reroute_stdout=True, reroute_stderr=True)],
+          reroute_stdout=True, reroute_stderr=True, disabled=True)],
 
           [sg.Input(size=(44, 1), justification='center',  key='-INPUT-'), sg.Button('Send', bind_return_key=True)]]
 
@@ -142,8 +140,8 @@ while True:
 
         update_messages(window)
     except Exception as e:
-        window['-TERMINAL-'].update(f"An error occurred: {e}\n", text_color='red', append=True)
-
+        window['-TERMINAL-'].update(f"An error occurred: {e}\n", append=True)
+        
 window.close()
 
         
@@ -158,5 +156,3 @@ window.close()
 # path_to_load="groupchat", # where to load the conversation history
 # create page to make an agent
 # create page for user api key
-
-
