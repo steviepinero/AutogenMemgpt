@@ -1,3 +1,10 @@
+Gui is a work in progress, run GUI-app.py to use the gui version after placing your API key to the top of the script
+
+![image](https://github.com/steviepinero/AutogenMemgpt/assets/8976522/3e5d7bec-95e9-4d2d-9732-3b75bf99b2f2)
+
+![image](https://github.com/steviepinero/AutogenMemgpt/assets/8976522/48ad0975-53bf-48cf-b216-6162912d1777)
+
+![image](https://github.com/steviepinero/AutogenMemgpt/assets/8976522/f74c1510-1056-426b-a6c2-b0d9931d2c42)
 
 
 The screenshots show the output from each agent in a terminal window.
@@ -16,10 +23,3 @@ Run 'App.py' once you have added your API key at the top of the script
 
 
 
-Gui is a work in progress, run GUI-app.py to use the gui version after placing your API key to the top of the script
-
-![image](https://github.com/steviepinero/AutogenMemgpt/assets/8976522/a7d93f4b-8583-493c-9a82-e6d66bfe4e52)
-
-![image](https://github.com/steviepinero/AutogenMemgpt/assets/8976522/e407760d-eb46-44da-8fc6-ac0b0970f7ec)
-
-![image](https://github.com/steviepinero/AutogenMemgpt/assets/8976522/150ac810-da57-4f7a-928a-9a932654f79c)
