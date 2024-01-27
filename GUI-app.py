@@ -37,14 +37,14 @@ user_proxy = autogen.UserProxyAgent(
     system_message="A human admin.",
     code_execution_config={"last_n_messages": 2, "work_dir": "groupchat"},
     human_input_mode="TERMINATE",
-    default_auto_reply="You are going to figure all out by your own. You are the expert. "
-    "Work by yourself, the user won't reply until you output `TERMINATE` to end the conversation.",
+    default_auto_reply="You are going to figure this all out on your own. You are the expert. I believe in you. Please do your best."
+    "Work by yourself, the user won't reply until your output is exactly `TERMINATE` to end the conversation.",
     is_termination_msg=lambda msg: msg == "TERMINATE",
 )
 
 interface = autogen_interface.AutoGenInterface() # how MemGPT talks to AutoGen
 persistence_manager = InMemoryStateManager()
-persona = "I\'m a 10x software engineer at a OpenAI."
+persona = "I'm a 10x software engineer at a OpenAI."
 human = "I\'m a scrum manager at a FAANG tech company."
 memgpt_agent = presets.use_preset(presets.DEFAULT_PRESET, None, 'gpt-4', persona, human, interface, persistence_manager)
 
@@ -104,13 +104,16 @@ def update_messages(window):
         message = message_queue.get()
         window['-TERMINAL-'].update(message + '\n', append=True)
 
-# Create a new PySimpleGUI window
-layout = [[sg.Multiline(size=(100, 40), key='-TERMINAL-', autoscroll=True, auto_refresh=True, 
-          reroute_stdout=True, reroute_stderr=True, disabled=True)],
 
-          [sg.Input(size=(44, 1), justification='center',  key='-INPUT-'), sg.Button('Send', bind_return_key=True)]]
+sg.theme('Reddit')
+chatLayout = [[sg.Multiline(size=(100, 40), key='-TERMINAL-', autoscroll=True, auto_refresh=True, reroute_stdout=True, reroute_stderr=True, disabled=True)],
+             [sg.Input(size=(44, 1), justification='center',  key='-INPUT-'), sg.Button('Send', bind_return_key=True), sg.VerticalSeparator(), sg.Button('Save'), sg.Button('Settings')]]
 
-window = sg.Window('Chat', layout, finalize=True)
+
+
+
+#TODO: fix UI not expanding to fit window
+window = sg.Window('Ai Agent Groupchat', chatLayout, finalize=True, resizable=True)
 
 
 
@@ -128,31 +131,42 @@ def run_main():
 while True:
 
     event, values = window.read(timeout=100)  # Add a timeout to allow periodic updates
-
+    file_counter = 0
     try:
         if event == sg.WIN_CLOSED:
             break
         if event == 'Send':
             message = values['-INPUT-']
             window['-INPUT-'].update('')
-            message_queue.put(f"User: {message}")
-            send_message(message)
+            threading.Thread(target=send_message, args=(message,), daemon=True).start()
+        elif event == 'Save':
+            file_counter += 1
+            with open(f'output{file_counter}.txt', 'w') as f:
+                f.write(values['-TERMINAL-'])
+            sg.popup(f'File saved as output{file_counter}.txt', title='File Saved')
+        elif event == 'Settings':
+            window.hide()
+            settingsLayout = [[sg.Text('Settings')],
+                              [sg.Text('OpenAI API Key:'), sg.InputText(OPENAI_API_KEY, key='-APIKEY-')],
+                              [sg.Text('Theme:'), sg.Listbox(values=sg.theme_list(), size=(20, 12), key='-THEME-', enable_events=True)],
+                    
+                              [sg.Button('Save'), sg.Button('Back')]]
+            window2 = sg.Window('Settings', settingsLayout, finalize=True)
+
+            while True:
+                event2, values2 = window2.read()
+                if event2 == sg.WIN_CLOSED or event2 == 'Back':
+                    window2.close()
+                    window.un_hide()
+                    break
+
+                    #TODO save theme and api key
+                sg.theme(values2['-THEME-'][0])
+                sg.popup_get_text('This is {}'.format(values2['-THEME-'][0]))
+            
 
         update_messages(window)
     except Exception as e:
         window['-TERMINAL-'].update(f"An error occurred: {e}\n", append=True)
         
 window.close()
-
-        
-
-
-
-
-
-#TODO:
-# handle exceptions and display custom error messages
-# path_to_save="groupchat", # where to save the conversation history
-# path_to_load="groupchat", # where to load the conversation history
-# create page to make an agent
-# create page for user api key
