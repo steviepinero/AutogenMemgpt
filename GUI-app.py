@@ -113,7 +113,7 @@ chatLayout = [[sg.Multiline(size=(100, 40), key='-TERMINAL-', autoscroll=True, a
 
 
 #TODO: fix UI not expanding to fit window
-window = sg.Window('Ai Agent Groupchat', chatLayout, finalize=True, resizable=True)
+window = sg.Window('Ai Agent Groupchat', chatLayout, finalize=True, resizable=True, icon='icon.ico', element_justification='center')
 
 
 
@@ -170,3 +170,4 @@ while True:
         window['-TERMINAL-'].update(f"An error occurred: {e}\n", append=True)
         
 window.close()
+
